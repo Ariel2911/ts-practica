@@ -1,0 +1,30 @@
+body{
+  display: grid;
+  place-content: center;
+  margin: 0;
+  background-color: lavender;
+}
+
+.App {
+  text-align: center;
+}
+
+ul,h2 {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  width: 50px;
+  border-radius: 50%;
+}
+
+ul li {
+  max-width: 320px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  list-style: none;
+  margin-bottom: 16px;
+  padding: 8px 32px;
+
+}
