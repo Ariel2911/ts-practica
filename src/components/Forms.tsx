@@ -6,7 +6,7 @@ interface FormState {
 }
 
 interface FormProps {
-  onNewSub: React.Dispatch<React.SetStateAction<Sub[]>>
+  onNewSub: (newSub: Sub) => void
 }
 
 const Forms = ({ onNewSub }: FormProps) => {
@@ -18,7 +18,7 @@ const Forms = ({ onNewSub }: FormProps) => {
   })
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onNewSub(subs => ([...subs, inputValue]))
+    onNewSub(inputValue)
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
