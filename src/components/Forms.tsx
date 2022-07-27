@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { Sub } from '../../types';
 
 interface FormState {
@@ -9,13 +9,40 @@ interface FormProps {
   onNewSub: (newSub: Sub) => void
 }
 
+const INICIAL_STATE = {
+  nick: '',
+  subMonths: 0,
+  avatar: '',
+  description: '',
+}
+
+type FormReducerAction = {
+   type: 'change-value',
+   payload: {
+    inputName: string
+    inputValue: string 
+   }
+} | {
+  type: 'clear'
+}
+
+const formReducer = (state: FormState['inputValue'], action: FormReducerAction) => {
+  switch(action.type) {
+    case 'change-value':
+      const {inputName, inputValue} = action.payload
+      return {
+        ...state,
+        [inputName]: inputValue,
+      }
+
+    case 'clear':
+      return INICIAL_STATE
+  }
+}
+
 const Forms = ({ onNewSub }: FormProps) => {
-  const [inputValue, setInputValue] = useState<FormState['inputValue']>({
-    nick: '',
-    subMonths: 0,
-    avatar: '',
-    description: '',
-  })
+  // const [inputValue, setInputValue] = useState<FormState['inputValue']>(INICIAL_STATE)
+  const [inputValue, dispatch] = useReducer(formReducer, INICIAL_STATE)
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onNewSub(inputValue);
@@ -23,19 +50,25 @@ const Forms = ({ onNewSub }: FormProps) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setInputValue({
-      ...inputValue,
-      [e.target.name]: e.target.value
-    })    
+    const { name, value } = e.target
+    dispatch({
+      type: 'change-value',
+      payload: {
+        inputName: name,
+        inputValue: value,
+      } 
+    })
+    // setInputValue({
+    //   ...inputValue,
+    //   [e.target.name]: e.target.value
+    // })    
   }
 
   const handleClear = () => {
-    setInputValue({
-      nick: '',
-      subMonths: 0,
-      avatar: '',
-      description: '',
+    dispatch({
+      type: 'clear'
     })
+    // setInputValue(INICIAL_STATE)
   }
 
   return (
@@ -44,7 +77,7 @@ const Forms = ({ onNewSub }: FormProps) => {
       <input onChange={handleChange} value={inputValue.subMonths} type='number' name='subMonths' placeholder='subMonths' />
       <input onChange={handleChange} value={inputValue.avatar} type='text' name='avatar' placeholder='avatar' />
       <textarea onChange={handleChange} value={inputValue.description} name='description' placeholder='description' />
-      <button type='button'>Borrar formulario</button>
+      <button onClick={handleClear} type='button'>Borrar formulario</button>
       <button type='submit'>Guardar nuevo</button>
     </form>
 
